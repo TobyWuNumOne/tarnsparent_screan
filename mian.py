@@ -2,25 +2,28 @@
 import tkinter as tk
 
 import time
+
 # 导入ttkbootstrap库
 from tkinter import ttk
 from ttkbootstrap import Style
 
 # 创建主窗口，并使用minty主题
-style = Style(theme='minty')
+style = Style(theme="minty")
 window = style.master
-window.title('简易计算器')
-window.geometry('300x400')
+window.title("简易计算器")
+window.geometry("300x400")
+
 
 def update_clock():
     # 取得當前時間
-    current_time = time.strftime('%H:%M:%S')
+    current_time = time.strftime("%H:%M:%S")
     # 更新標籤的內容
     clock_label.config(text=current_time)
     # 每秒更新一次
     clock_label.after(1000, update_clock)
 
-clock_label = tk.Label(window, font=('Helvetica', 48), bg='black', fg='white')
+
+clock_label = tk.Label(window, font=("Helvetica", 48), bg="black", fg="white")
 clock_label.pack(padx=20, pady=20)
 update_clock()
 # 创建一个标签，用于显示结果
@@ -59,15 +62,15 @@ update_clock()
 # y = 50 # 按钮的初始纵坐标
 
 # for i in range(len(buttons)):
-#     button = ttk.Button(window, text=buttons[i], width=6, style='success.TButton') # 创建按钮对象，并指定样式为rounded-lg.TButton 
-#     button.place(x=x, y=y) # 放置按钮对象到窗口上 
+#     button = ttk.Button(window, text=buttons[i], width=6, style='success.TButton') # 创建按钮对象，并指定样式为rounded-lg.TButton
+#     button.place(x=x, y=y) # 放置按钮对象到窗口上
 #     button.bind('<Button-1>', click) # 绑定点击事件到函数click上
-    
+
 #     x += 70 # 更新横坐标
-    
-#     if (i + 1) % 4 == 0: # 如果是每行的最后一个按钮，就换行，并重置横坐标和纵坐标 
-#         x = 5 
+
+#     if (i + 1) % 4 == 0: # 如果是每行的最后一个按钮，就换行，并重置横坐标和纵坐标
+#         x = 5
 #         y += 50
 
-# 启动主循环        
+# 启动主循环
 window.mainloop()
