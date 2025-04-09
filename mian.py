@@ -8,17 +8,16 @@ import tkinter as tk
 import time
 from tkinter import ttk
 from ttkbootstrap import Style
+from weather import get_weather_text
+import sys
 
-# 建立主視窗，使用 minty 主題
 style = Style(theme="minty")
 window = style.master
 window.title("智慧時鐘")
 window.attributes('-fullscreen', True)
 window.bind("<Escape>", lambda e: window.destroy())
 
-def get_weather_text():
-    # 未來可以接 API，這裡先放假資料
-    return "天氣：晴朗 ☀️  25°C"
+print("目前匯入來源：", sys.path)
 
 def update_clock():
     # 更新時間
@@ -29,6 +28,7 @@ def update_clock():
 def update_weather():
     # 更新天氣
     weather_info = get_weather_text()
+    print("DEBUG 天氣資訊：", weather_info)
     weather_label.config(text=weather_info)
     weather_label.after(60000, update_weather)  # 每分鐘更新一次
 
