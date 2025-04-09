@@ -6,39 +6,111 @@
 # @Project : Raspberry Pi 智慧時鐘
 import requests
 import os
+from datetime import datetime
 from dotenv import load_dotenv
-from tkinter import Tk
 
-load_dotenv()
+load_dotenv(dotenv_path='.env')
+API_KEY = os.getenv('KEY')
+CITY = os.getenv('LOCATION')
+# 讀取環境變數
 
-API_KEY = os.getenv("WEATHER_API_KEY")
-CITY = os.getenv("CITY", "Taipei")
-
-# 確保 API_KEY 和 CITY 都已經設置
-# if not API_KEY:
-#     raise ValueError("請設置 WEATHER_API_KEY 環境變數")
-# if not CITY:
-#     raise ValueError("請設置 CITY 環境變數")
+if not API_KEY:
+    raise ValueError("請設置 WEATHER_API_KEY 環境變數")
+if not CITY:
+    raise ValueError("請設置 CITY 環境變數")
+# 確保環境變數已經設置
 
 def get_weather_text():
+    # 獲取當前的日期和時間
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # 獲取天氣資訊
+    weather_data = get_weather_data(CITY)
+    simplified_data = simplify_data(weather_data)
+    current_weather = get_current_weather(simplified_data)
+
+    if current_weather is not None:
+        text = f'☝️「{CITY}」...\n位置: {CITY}\n氣候: {current_weather["Wx"]}\n降雨機率: {current_weather["PoP"]}\n體感: {current_weather["CI"]}'
+        return text
+    else:
+        return "無法獲取天氣資訊"
+
+
+
+def get_weather_data(location):
+    url = f"https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization={API_KEY}&locationName=%E6%96%B0%E5%8C%97%E5%B8%82"
+    params = {
+        "Authorization": os.getenv('OPEN_API'),
+        "format": "JSON",
+        "locationName": location
+    }
+    headers = {
+        "accept": "application/json"
+    }
+
+    response = requests.get(url, params=params, headers=headers)
+    # 將回應的JSON內容轉換為Python字典
+    data = response.json()
+
+    return data
+
+def simplify_data(data):
+    location_data = data['records']['location'][0]
+    weather_elements = location_data['weatherElement']
+
+    simplified_data = {
+        'location': location_data['locationName'],
+    }
+
+    for element in weather_elements:
+        element_name = element['elementName']
+        for time in element['time']:
+            # 使用完整的開始時間作為鍵
+            start_time = time['startTime']
+            if start_time not in simplified_data:
+                simplified_data[start_time] = {}
+
+            parameter = time['parameter']
+            parameter_str = parameter['parameterName']
+            if 'parameterUnit' in parameter:
+                parameter_str += f" {parameter['parameterUnit']}"
+
+            # 尋找或創建對應時間的字典
+            end_time = time['endTime']
+            if end_time not in simplified_data[start_time]:
+                simplified_data[start_time][end_time] = {}
+
+            simplified_data[start_time][end_time][element_name] = parameter_str
+
+    return simplified_data
+
+def get_current_weather(simplified_data):
     try:
-        url = f"https://api.openweathermap.org/data/2.5/weather?q={CITY}&appid={API_KEY}&units=metric&lang=zh_tw"
-        response = requests.get(url)
-        data = response.json()
+        # 獲取當前的日期和時間
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        if data.get("cod") != 200:
-            return "天氣資訊讀取失敗 ❌"
-
-        weather = data["weather"][0]["description"]
-        temp = data["main"]["temp"]
-        return f"天氣：{weather} 🌡 {temp:.1f}°雞巴棒"
-
+        # 遍歷所有的時間段
+        for start_time in simplified_data:
+            if start_time == 'location':
+                continue
+            for end_time in simplified_data[start_time]:
+                # 如果當前時間在這個時間段內，則返回對應的天氣資訊
+                if start_time <= now <= end_time:
+                    return simplified_data[start_time][end_time]
+                else:
+                    # 如果沒有找到符合的時間段，則返回第一個天氣資訊
+                    return simplified_data[start_time][end_time]
     except Exception as e:
-        return f"無法取得天氣資訊 🚫"
+        print(f"An error occurred: {e}")
 
-def update_weather():
-    # 更新天氣
-    weather_info = get_weather_text()
-    print("DEBUG 天氣資訊：", weather_info)
-    weather_label.config(text=weather_info)
-    weather_label.after(60000, update_weather)  # 每分鐘更新一次
+    # 如果沒有找到任何天氣資訊，則返回None
+    return None
+
+weather_data = get_weather_data(CITY)
+simplified_data = simplify_data(weather_data)
+current_weather = get_current_weather(simplified_data)
+
+print('The Data is: ' + str(current_weather))
+if current_weather is not None:
+    text = f'☝️「{CITY}」...\n位置: {CITY}\n氣候: {current_weather["Wx"]}\n降雨機率: {current_weather["PoP"]}\n體感: {current_weather["CI"]}'
+
+print(text)

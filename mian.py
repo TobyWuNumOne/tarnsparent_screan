@@ -6,10 +6,11 @@
 # @Project : Raspberry Pi 智慧時鐘
 import tkinter as tk
 import time
+import weather
+import sys
 from tkinter import ttk
 from ttkbootstrap import Style
-from weather import get_weather_text
-import sys
+
 
 style = Style(theme="minty")
 window = style.master
@@ -17,7 +18,7 @@ window.title("智慧時鐘")
 window.attributes('-fullscreen', True)
 window.bind("<Escape>", lambda e: window.destroy())
 
-print("目前匯入來源：", sys.path)
+
 
 def update_clock():
     # 更新時間
@@ -27,7 +28,7 @@ def update_clock():
 
 def update_weather():
     # 更新天氣
-    weather_info = get_weather_text()
+    weather_info = weather.get_weather_text()
     print("DEBUG 天氣資訊：", weather_info)
     weather_label.config(text=weather_info)
     weather_label.after(60000, update_weather)  # 每分鐘更新一次
