@@ -18,8 +18,6 @@ window.title("智慧時鐘")
 window.attributes('-fullscreen', True)
 window.bind("<Escape>", lambda e: window.destroy())
 
-
-
 def update_clock():
     # 更新時間
     current_time = time.strftime("%H:%M:%S")
@@ -29,7 +27,6 @@ def update_clock():
 def update_weather():
     # 更新天氣
     weather_info = weather.get_weather_text()
-    print("DEBUG 天氣資訊：", weather_info)
     weather_label.config(text=weather_info)
     weather_label.after(60000, update_weather)  # 每分鐘更新一次
 

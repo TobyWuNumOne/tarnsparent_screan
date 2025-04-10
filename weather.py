@@ -6,6 +6,7 @@
 # @Project : Raspberry Pi 智慧時鐘
 import requests
 import os
+import json
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -21,15 +22,13 @@ if not CITY:
 # 確保環境變數已經設置
 
 def get_weather_text():
-    # 獲取當前的日期和時間
-    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     # 獲取天氣資訊
     weather_data = get_weather_data(CITY)
     simplified_data = simplify_data(weather_data)
     current_weather = get_current_weather(simplified_data)
 
     if current_weather is not None:
-        text = f'☝️「{CITY}」...\n位置: {CITY}\n氣候: {current_weather["Wx"]}\n降雨機率: {current_weather["PoP"]}\n體感: {current_weather["CI"]}'
+        text = f'位置: {CITY}\n天氣概況: {current_weather["Wx"]}\n降雨機率: {current_weather["PoP"]}\n體感: {current_weather["CI"]}'
         return text
     else:
         return "無法獲取天氣資訊"
@@ -39,24 +38,39 @@ def get_weather_text():
 def get_weather_data(location):
     url = f"https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization={API_KEY}&locationName=%E6%96%B0%E5%8C%97%E5%B8%82"
     params = {
-        "Authorization": os.getenv('OPEN_API'),
-        "format": "JSON",
         "locationName": location
-    }
+        }
+    
     headers = {
         "accept": "application/json"
     }
+    # 設置請求的參數和標頭
+    # 發送GET請求到API
+    response = requests.get(url, params=params, headers=headers, timeout=10)
 
-    response = requests.get(url, params=params, headers=headers)
-    # 將回應的JSON內容轉換為Python字典
-    data = response.json()
 
-    return data
+    if response.status_code == 200:
+        try:
+            # 將回應的JSON內容轉換為Python字典
+            data = response.json()
+            return data
+        except ValueError:
+            raise ValueError("API response is not valid JSON")
+    else:
+        raise ValueError(f"API request failed with status code {response.status_code}: {response.text}")
+# 確保API請求成功，並且返回的數據是有效的JSON格式
 
 def simplify_data(data):
-    location_data = data['records']['location'][0]
+    try:
+        location_data = data['records']['location'][1] 
+    except IndexError:
+        location_data = data['records']['location'][0]
+    # 確保獲取到正確的地點數據因為回傳好像都會包含新北市除了新北市只有新北市
+    
     weather_elements = location_data['weatherElement']
-
+    # 獲取天氣元素
+    
+    # 簡化數據結構
     simplified_data = {
         'location': location_data['locationName'],
     }
@@ -111,6 +125,6 @@ current_weather = get_current_weather(simplified_data)
 
 print('The Data is: ' + str(current_weather))
 if current_weather is not None:
-    text = f'☝️「{CITY}」...\n位置: {CITY}\n氣候: {current_weather["Wx"]}\n降雨機率: {current_weather["PoP"]}\n體感: {current_weather["CI"]}'
+    text = f'位置: {CITY}\n氣候: {current_weather["Wx"]}\n降雨機率: {current_weather["PoP"]}\n體感: {current_weather["CI"]}'
 
 print(text)
