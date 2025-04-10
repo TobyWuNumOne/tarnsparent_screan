@@ -1,12 +1,7 @@
-from flask import Flask, send_file, send_from_directory
+from flask import Flask, send_file
 from weather import get_weather_text
 
 app = Flask(__name__)
-
-
-@app.route('/fonts/<path:filename>')
-def serve_fonts(filename):
-    return send_from_directory('fonts', filename)
 
 @app.route('/')
 def index():
