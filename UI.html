@@ -1,23 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transparent Screen</title>
+    <style>
+        @font-face {
+            font-family: 'DSEG7ClassicMini-Bold';
+            src: url('/fonts/DSEG7ClassicMini-Bold.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+</head>
 <body style="margin:0; background:white; color:black; font-family:sans-serif;">
-    <div style="position:absolute; top:30px; left:40px; font-size:80px;" id="time">--:--:--</div>
+    <div style="position:absolute; top:30px; left:40px; display:flex; gap:10px; align-items:baseline; font-family:DSEG7ClassicMini-Bold" id="time"></div>
     <div style="position:absolute; bottom:30px; left:40px; font-size:28px;" id="weather">Loading...</div>
-  
+
     <script>
-      function updateTime() {
-        const now = new Date();
-        const timeStr = now.toTimeString().slice(0, 8);
-        document.getElementById("time").textContent = timeStr;
-      }
-  
-      async function updateWeather() {
-        const res = await fetch('/weather');
-        const text = await res.text();
-        document.getElementById("weather").innerHTML = text;
-      }
-  
-      setInterval(updateTime, 1000);
-      setInterval(updateWeather, 60000);
-      updateTime();
-      updateWeather();
+        function updateTime() {
+            const now = new Date();
+            const h = now.getHours().toString().padStart(2, '0');
+            const m = now.getMinutes().toString().padStart(2, '0');
+            const s = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById("time").innerHTML = `
+                <span style="font-size:100px; display:inline-block;">${h}</span>
+                <span style="font-size:80px; display:inline-block;">${m}</span>
+                <span style="font-size:60px; display:inline-block;">${s}</span>
+            `;
+        }
+
+        async function updateWeather() {
+            const res = await fetch('/weather');
+            const text = await res.text();
+            document.getElementById("weather").innerHTML = text;
+        }
+
+        setInterval(updateTime, 1000);
+        setInterval(updateWeather, 60000);
+        updateTime();
+        updateWeather();
     </script>
-  </body>
+</body>
+</html>
