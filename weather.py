@@ -28,7 +28,7 @@ def get_weather_text():
     current_weather = get_current_weather(simplified_data)
 
     if current_weather is not None:
-        text = f'位置: {CITY}\n天氣概況: {current_weather["Wx"]}\n降雨機率: {current_weather["PoP"]}\n體感: {current_weather["CI"]}'
+        text = f'位置: {CITY}<br>天氣概況: {current_weather["Wx"]}<br>降雨機率: {current_weather["PoP"]}<br>體感: {current_weather["CI"]}'
         return text
     else:
         return "無法獲取天氣資訊"
@@ -125,6 +125,6 @@ def get_current_weather(simplified_data):
 
 # print('The Data is: ' + str(current_weather))
 # if current_weather is not None:
-#     text = f'位置: {CITY}\n天氣概況: {current_weather["Wx"]}\n降雨機率: {current_weather["PoP"]}\n體感: {current_weather["CI"]}'
+#     text = f'位置: {CITY}<br>天氣概況: {current_weather["Wx"]}<br>降雨機率: {current_weather["PoP"]}<br>體感: {current_weather["CI"]}'
 
 # print(text)

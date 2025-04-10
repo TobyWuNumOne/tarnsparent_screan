@@ -1,0 +1,23 @@
+<body style="margin:0; background:white; color:black; font-family:sans-serif;">
+    <div style="position:absolute; top:30px; left:40px; font-size:80px;" id="time">--:--:--</div>
+    <div style="position:absolute; bottom:30px; left:40px; font-size:28px;" id="weather">Loading...</div>
+  
+    <script>
+      function updateTime() {
+        const now = new Date();
+        const timeStr = now.toTimeString().slice(0, 8);
+        document.getElementById("time").textContent = timeStr;
+      }
+  
+      async function updateWeather() {
+        const res = await fetch('/weather');
+        const text = await res.text();
+        document.getElementById("weather").innerHTML = text;
+      }
+  
+      setInterval(updateTime, 1000);
+      setInterval(updateWeather, 60000);
+      updateTime();
+      updateWeather();
+    </script>
+  </body>
