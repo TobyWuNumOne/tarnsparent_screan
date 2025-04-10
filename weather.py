@@ -119,12 +119,12 @@ def get_current_weather(simplified_data):
     # 如果沒有找到任何天氣資訊，則返回None
     return None
 
-weather_data = get_weather_data(CITY)
-simplified_data = simplify_data(weather_data)
-current_weather = get_current_weather(simplified_data)
+# weather_data = get_weather_data(CITY)
+# simplified_data = simplify_data(weather_data)
+# current_weather = get_current_weather(simplified_data)
 
-print('The Data is: ' + str(current_weather))
-if current_weather is not None:
-    text = f'位置: {CITY}\n氣候: {current_weather["Wx"]}\n降雨機率: {current_weather["PoP"]}\n體感: {current_weather["CI"]}'
+# print('The Data is: ' + str(current_weather))
+# if current_weather is not None:
+#     text = f'位置: {CITY}\n天氣概況: {current_weather["Wx"]}\n降雨機率: {current_weather["PoP"]}\n體感: {current_weather["CI"]}'
 
-print(text)
+# print(text)
