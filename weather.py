@@ -24,14 +24,15 @@ if not CITY:
 def get_weather_text():
     # 獲取天氣資訊
     weather_data = get_weather_data(CITY)
+    if weather_data is None:
+        return "無法獲取天氣資訊"
     simplified_data = simplify_data(weather_data)
     current_weather = get_current_weather(simplified_data)
 
     if current_weather is not None:
-        text = f'位置: {CITY}<br>天氣概況: {current_weather["Wx"]}<br>降雨機率: {current_weather["PoP"]}<br>體感: {current_weather["CI"]}'
+        text = f'位置: {CITY}<br>天氣概況: {current_weather["Wx"]}<br>最高溫: {current_weather["MaxT"]}<br>最低溫: {current_weather["MinT"]}<br>降雨機率: {current_weather["PoP"]}<br>體感: {current_weather["CI"]}'
+
         return text
-    else:
-        return "無法獲取天氣資訊"
 
 
 
@@ -57,8 +58,8 @@ def get_weather_data(location):
         except ValueError:
             raise ValueError("API response is not valid JSON")
     else:
-        raise ValueError(f"API request failed with status code {response.status_code}: {response.text}")
-# 確保API請求成功，並且返回的數據是有效的JSON格式
+        return None
+        # 確保API請求成功，並且返回的數據是有效的JSON格式
 
 def simplify_data(data):
     try:
@@ -118,13 +119,3 @@ def get_current_weather(simplified_data):
 
     # 如果沒有找到任何天氣資訊，則返回None
     return None
-
-# weather_data = get_weather_data(CITY)
-# simplified_data = simplify_data(weather_data)
-# current_weather = get_current_weather(simplified_data)
-
-# print('The Data is: ' + str(current_weather))
-# if current_weather is not None:
-#     text = f'位置: {CITY}<br>天氣概況: {current_weather["Wx"]}<br>降雨機率: {current_weather["PoP"]}<br>體感: {current_weather["CI"]}'
-
-# print(text)
