@@ -34,6 +34,8 @@ chmod +x install_pi_setup.sh start.sh
 ./start.sh
 ```
 
+執行過程中會自動記錄 log 到 `flask.log`，以利除錯。
+
 ---
 
 ## 🔧 開機自動啟動與全螢幕模式
@@ -81,3 +83,13 @@ tarnsparent_screan/
 
 
 MIT
+
+## 📦 專案打包
+
+若需將整個專案打包，可使用以下指令：
+
+```bash
+tar --exclude="venv" --exclude="__pycache__" -czf transparent_display.tar.gz tarnsparent_screan
+```
+
+此壓縮檔可方便移轉或備份（不包含虛擬環境與快取）。

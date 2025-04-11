@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=TransparentDisplay
+Exec=sh -c "/home/pi/code/tablecloth-v1/tarnsparent_screan/start.sh & sleep 5 && chromium-browser --kiosk http://localhost:5001"
+X-GNOME-Autostart-enabled=true
+#📌 注意：你要根據實際放在哪裡來改上面那段 /home/pi/... 路徑（或用 $HOME 替代成動態）
