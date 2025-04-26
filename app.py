@@ -1,5 +1,5 @@
 from flask import Flask, send_file, send_from_directory
-from weather import get_weather_text
+from python.weather import get_weather_text
 
 app = Flask(__name__)
 
