@@ -1,0 +1,50 @@
+/* Define font-face for DSEG7ClassicMini-Bold */
+@font-face {
+    font-family: 'DSEG7ClassicMini-Bold';
+    src: url('/fonts/DSEG7ClassicMini-Bold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Body styling */
+body {
+    margin: 0;
+    background: white;
+    color: black;
+    font-family: sans-serif;
+}
+
+/* Time display styling */
+#time {
+    position: absolute;
+    top: 30px;
+    left: 40px;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-family: 'DSEG7ClassicMini-Bold';
+}
+
+#time span {
+    display: inline-block;
+}
+
+#time span:nth-child(1) {
+    font-size: 100px;
+}
+
+#time span:nth-child(2) {
+    font-size: 80px;
+}
+
+#time span:nth-child(3) {
+    font-size: 60px;
+}
+
+/* Weather display styling */
+#weather {
+    position: absolute;
+    bottom: 30px;
+    left: 40px;
+    font-size: 28px;
+}
