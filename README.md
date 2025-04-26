@@ -55,7 +55,7 @@ cp kiosk.desktop ~/.config/autostart/
 
 請在專案根目錄放置 `.env` 檔案，格式如下：
 
-```
+```env
 KEY=你的中央氣象局 API 金鑰
 LOCATION=新北市
 ```
@@ -64,7 +64,7 @@ LOCATION=新北市
 
 ## 📁 專案結構摘要
 
-```
+```hss
 tarnsparent_screan/
 ├── app.py               # Flask 主伺服器
 ├── UI.html              # 前端畫面
@@ -80,7 +80,6 @@ tarnsparent_screan/
 ---
 
 ## 🪪 License
-
 
 MIT
 
