@@ -34,6 +34,8 @@ chmod +x install_pi_setup.sh start.sh
 ./start.sh
 ```
 
+執行過程中會自動記錄 log 到 `flask.log`，以利除錯。
+
 ---
 
 ## 🔧 開機自動啟動與全螢幕模式
@@ -53,7 +55,7 @@ cp kiosk.desktop ~/.config/autostart/
 
 請在專案根目錄放置 `.env` 檔案，格式如下：
 
-```
+```env
 KEY=你的中央氣象局 API 金鑰
 LOCATION=新北市
 ```
@@ -62,7 +64,7 @@ LOCATION=新北市
 
 ## 📁 專案結構摘要
 
-```
+```hss
 tarnsparent_screan/
 ├── app.py               # Flask 主伺服器
 ├── UI.html              # 前端畫面
@@ -79,5 +81,14 @@ tarnsparent_screan/
 
 ## 🪪 License
 
-
 MIT
+
+## 📦 專案打包
+
+若需將整個專案打包，可使用以下指令：
+
+```bash
+tar --exclude="venv" --exclude="__pycache__" -czf transparent_display.tar.gz tarnsparent_screan
+```
+
+此壓縮檔可方便移轉或備份（不包含虛擬環境與快取）。
