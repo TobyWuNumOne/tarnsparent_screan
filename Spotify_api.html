@@ -1,51 +1,139 @@
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Spotify Web Playback SDK Quick Start</title>
+    <link rel="stylesheet" href="static/Spotify_api.css">
 </head>
 <body>
-    <h1>Spotify Web Playback SDK Quick Start</h1>
-    <button id="togglePlay">Toggle Play</button>
+    <h1>Spotify Web Playback SDK</h1>
+    <div id="lyrics">Loading lyrics...</div>
+    <div id="controls">
+        <button id="prevTrack">Previous</button>
+        <button id="togglePlay">Toggle Play</button>
+        <button id="nextTrack">Next</button>
+    </div>
 
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = 'BQD6HceYyG15Ect8HxpmEDWDKOB7_F2_drneJC7IwhuZq3GlxuoROZ5S_LsiEHI_Kd9CgiIWvxz7_hnoQp94F7Hz8rMqx2fWrOvumN9aPKmTIbIlEg7nVLii9xU1l2ZvDV8h3rFDymeHe7i4xdAW_euquWG1TaEfdqAN-K9frLuXhHFrx14FU1GX2AXuvpirs36Rhnpo_Ll3Ewdnl4GKe2YP1qo_0vUmiE7qS-8BXb0Nxw';
+            const token = 'BQDuX3l6d5DLcndmDPuBXRXxxCKn3xk2bgdcRTaryQQ4IZerbG0ScOxkfHzty4voc18DpQtTmXTqrPOkLhqvLmT3GQVuRHceq48hAcWn2IBzPA8See-yXVjt16tnk5nbps7qjlSpqgcBWnMcufPm9vGOLS4phfe_de3oFqUZCRycxI0T_IRMtkfB3k8EPiEEIK3MWCzqVLIII5uoYHVuxOA17RqV17WNuk79kpWY2lutHQ'; // Replace with your updated token
             const player = new Spotify.Player({
-                name: 'Web Playback SDK Quick Start Player',
+                name: 'Web Playback SDK Player',
                 getOAuthToken: cb => { cb(token); },
                 volume: 0.5
             });
 
-            // Ready
             player.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID', device_id);
+
+                // 設置活動設備
+                fetch('https://api.spotify.com/v1/me/player', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        device_ids: [device_id],
+                        play: true
+                    })
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Failed to set active device:', response.statusText);
+                    } else {
+                        console.log('Active device set successfully');
+
+                        // 啟動播放指定的播放清單
+                        fetch('https://api.spotify.com/v1/me/player/play', {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                context_uri: 'spotify:playlist:37i9dQZF1DXcBWIGoYBM5M', // 替換為你的播放清單 URI
+                                offset: { position: 0 },
+                                position_ms: 0
+                            })
+                        }).then(response => {
+                            if (!response.ok) {
+                                console.error('Failed to start playback:', response.statusText);
+                            } else {
+                                console.log('Playback started successfully');
+                            }
+                        });
+                    }
+                });
             });
 
-            // Not Ready
             player.addListener('not_ready', ({ device_id }) => {
                 console.log('Device ID has gone offline', device_id);
             });
 
-            player.addListener('initialization_error', ({ message }) => {
-                console.error(message);
-            });
-
-            player.addListener('authentication_error', ({ message }) => {
-                console.error(message);
-            });
-
-            player.addListener('account_error', ({ message }) => {
-                console.error(message);
-            });
-
             document.getElementById('togglePlay').onclick = function() {
-            player.togglePlay();
+                player.togglePlay().catch(error => {
+                    console.error('Error toggling play:', error);
+                    if (error.message.includes('404')) {
+                        alert('No active playback resource found. Please start playback in the Spotify app.');
+                    }
+                });
             };
 
             player.connect();
-        }
+
+            function fetchLyrics(trackName, artistName) {
+                const lyricsElement = document.getElementById('lyrics');
+
+                // 使用第三方歌詞 API（例如 Musixmatch 或 Genius）
+                fetch(`https://api.lyrics.ovh/v1/${artistName}/${trackName}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch lyrics');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        lyricsElement.innerText = data.lyrics || 'Lyrics not found';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching lyrics:', error);
+                        lyricsElement.innerText = 'Unable to load lyrics';
+                    });
+            }
+
+            function fetchCurrentlyPlaying() {
+                fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if (response.status === 401) {
+                        throw new Error('Token expired or unauthorized. Please update your Spotify access token.');
+                    }
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch currently playing track');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const trackName = data.item.name;
+                    const artistName = data.item.artists[0].name;
+                    console.log(`Currently playing: ${trackName} by ${artistName}`);
+
+                    // 獲取歌詞
+                    fetchLyrics(trackName, artistName);
+                })
+                .catch(error => {
+                    console.error('Error fetching currently playing track:', error);
+                    document.getElementById('lyrics').innerText = error.message;
+                });
+            }
+
+            // 定期更新歌詞
+            setInterval(fetchCurrentlyPlaying, 10000); // 每 10 秒更新一次
+        };
     </script>
 </body>
 </html>
