@@ -10,7 +10,7 @@ def serve_fonts(filename):
 
 @app.route('/')
 def index():
-    return send_file('UI.html')
+    return send_file('index.html')
 
 @app.route('/weather')
 def weather():

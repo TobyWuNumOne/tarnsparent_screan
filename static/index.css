@@ -14,6 +14,18 @@ body {
     font-family: sans-serif;
 }
 
+.transparent {
+    display: block;
+    flex-direction: column;
+    justify-content: center;
+
+    align-items: center;
+}
+
+.weight {
+    display: flex;
+}
+
 /* Time display styling */
 #time {
     position: absolute;
@@ -43,6 +55,7 @@ body {
 
 /* Weather display styling */
 #weather {
+
     position: absolute;
     bottom: 30px;
     left: 40px;
