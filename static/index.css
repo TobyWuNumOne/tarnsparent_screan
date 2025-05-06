@@ -14,25 +14,28 @@ body {
     font-family: sans-serif;
 }
 
-.transparent {
-    display: block;
+/* Add styles to vertically align the elements and distribute spacing evenly */
+#transparent {
+    display: flex;
     flex-direction: column;
-    justify-content: center;
-
-    align-items: center;
+    justify-content: space-between;
+    /* align-items: center; */
+    height: 90vh;
+    /* Full viewport height */
+    padding: 20px;
+    /* Optional padding */
 }
 
-.weight {
-    display: flex;
+#transparent .time,
+#transparent .lyrics,
+#transparent .weather {
+    margin: 10px 0;
+    /* Add some spacing between elements */
 }
 
 /* Time display styling */
 #time {
-    position: absolute;
-    top: 30px;
-    left: 40px;
-    display: flex;
-    gap: 10px;
+    position: relative;
     align-items: baseline;
     font-family: 'DSEG7ClassicMini-Bold';
 }
@@ -53,11 +56,14 @@ body {
     font-size: 60px;
 }
 
+.lyrics {
+    position: relative;
+    text-align: center;
+    font-size: 28px;
+}
+
 /* Weather display styling */
 #weather {
-
-    position: absolute;
-    bottom: 30px;
-    left: 40px;
+    position: relative;
     font-size: 28px;
 }
