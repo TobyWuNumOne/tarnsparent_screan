@@ -22,7 +22,7 @@ from lrclib.models import (
 @pytest.fixture(scope="module")
 def api() -> LrcLibAPI:
     # Create an instance of the LrcLibAPI class
-    _api = LrcLibAPI(user_agent="test_user_agent")
+    _api = LrcLibAPI(user_agent="my-app/0.0.1")
     return _api
 
 
