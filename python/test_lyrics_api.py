@@ -13,4 +13,6 @@ lyrics = api.get_lyrics(
 
 found_lyrics = lyrics.synced_lyrics or lyrics.plain_lyrics
 print(type(lyrics))
+print(lyrics.track_name)
+print(lyrics)
 print("\n".join(found_lyrics.split("\n")[:10]))
